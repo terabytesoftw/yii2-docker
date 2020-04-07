@@ -58,10 +58,10 @@ script:
 after_script:
   - docker images
 
-#after_success:
-#  - if [[ $TRAVIS_BRANCH = "master" || -n "$TRAVIS_TAG" ]]; then
-#      echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin  &&
-#      docker-compose push;
-#    fi
+after_success:
+  - if [[ $TRAVIS_BRANCH = "master" || -n "$TRAVIS_TAG" ]]; then
+      echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin  &&
+      docker-compose push;
+    fi
 
 # vim:set et ts=2 sw=2:
