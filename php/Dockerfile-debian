@@ -65,13 +65,15 @@ RUN if [ $X_LEGACY_GD_LIB = 1 ]; then \
         pdo_mysql \
         pdo_pgsql
 
-# Install PECL extensions
-# see http://stackoverflow.com/a/8154466/291573) for usage of `printf`
-RUN printf "\n" | pecl install \
-        imagick \
-        xdebug \
-        mongodb && \
-    docker-php-ext-enable \
+# Install PECL extensions with pickle
+# TODO: WIP (PHP 8)
+RUN curl  -fsSL  https://github.com/FriendsOfPHP/pickle/releases/download/v0.6.0/pickle.phar -o /usr/local/bin/pickle && \
+    chmod +x /usr/local/bin/pickle && \
+    pickle install --defaults --no-interaction mongodb && \
+    pickle install --defaults --no-interaction imagick
+# TODO: install xdebug
+## RUN pickle install --defaults --no-interaction xdebug
+RUN docker-php-ext-enable \
         imagick \
         mongodb
 
