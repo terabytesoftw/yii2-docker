@@ -15,7 +15,7 @@ jobs:
       DOCKERFILE_FLAVOUR: debian
       X_LEGACY_GD_LIB: 1
       DOCKER_COMPOSE_VERSION: 1.25.4
-      TEST_YII_VERSION: a777c2e8f69dc753f8a945b1dd54bbaaa1e9e66c
+      TEST_YII_VERSION: 2.0.35
       PHP_IMAGE_NAME: yiisoftware/yii2-php
       key: cache-v1
 
