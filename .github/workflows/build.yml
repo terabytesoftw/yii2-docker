@@ -17,24 +17,24 @@ jobs:
     strategy:
       matrix:
         images:
-          "5.6-fpm DOCKERFILE_FLAVOUR=debian"
-          "7.0-fpm DOCKERFILE_FLAVOUR=debian"
-          "7.1-fpm DOCKERFILE_FLAVOUR=debian"
-          "7.2-fpm DOCKERFILE_FLAVOUR=debian"
-          "5.6-apache DOCKERFILE_FLAVOUR=debian"
-          "7.0-apache DOCKERFILE_FLAVOUR=debian"
-          "7.1-apache DOCKERFILE_FLAVOUR=debian"
-          "7.2-apache DOCKERFILE_FLAVOUR=debian"
+          - "5.6-fpm DOCKERFILE_FLAVOUR=debian"
+          - "7.0-fpm DOCKERFILE_FLAVOUR=debian"
+          - "7.1-fpm DOCKERFILE_FLAVOUR=debian"
+          - "7.2-fpm DOCKERFILE_FLAVOUR=debian"
+          - "5.6-apache DOCKERFILE_FLAVOUR=debian"
+          - "7.0-apache DOCKERFILE_FLAVOUR=debian"
+          - "7.1-apache DOCKERFILE_FLAVOUR=debian"
+          - "7.2-apache DOCKERFILE_FLAVOUR=debian"
 
         vars:
-          "1"
-          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
-          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
-          "1"
-          "1"
-          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
-          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
-          "1"
+          - "1"
+          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
+          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
+          - "1"
+          - "1"
+          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
+          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
+          - "1"
 
     services:
       mysql:
