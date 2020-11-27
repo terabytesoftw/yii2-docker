@@ -1,0 +1,77 @@
+on:
+  - pull_request
+  - push
+
+name: build
+
+jobs:
+  tests:
+    name: doker-images-${{ matrix.images }}
+
+    env:
+
+      key: cache-v1
+
+    runs-on: ${{ matrix.images }}
+
+    strategy:
+      matrix:
+        images:
+          "5.6-fpm DOCKERFILE_FLAVOUR=debian"
+          "7.0-fpm DOCKERFILE_FLAVOUR=debian"
+          "7.1-fpm DOCKERFILE_FLAVOUR=debian"
+          "7.2-fpm DOCKERFILE_FLAVOUR=debian"
+          "5.6-apache DOCKERFILE_FLAVOUR=debian"
+          "7.0-apache DOCKERFILE_FLAVOUR=debian"
+          "7.1-apache DOCKERFILE_FLAVOUR=debian"
+          "7.2-apache DOCKERFILE_FLAVOUR=debian"
+
+        vars:
+          "1"
+          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
+          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
+          "1"
+          "1"
+          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
+          "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
+          "1"
+
+    services:
+      mysql:
+        image: ${{ matrix.images }}
+        
+    steps:
+      - name: Before install
+        run: |
+          export TEST_YII_VERSION=a777c2e8f69dc753f8a945b1dd54bbaaa1e9e66c
+          export DOCKER_COMPOSE_VERSION=1.25.4
+          export PHP_IMAGE_NAME=yiisoftware/yii2-php      
+          sudo apt-get update
+          sudo apt-get install docker-ce
+          sudo rm /usr/local/bin/docker-compose
+          curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+          chmod +x docker-compose
+          sudo mv docker-compose /usr/local/bin
+
+      - name: Install
+        run: |
+          git clone https://github.com/yiisoft/yii2 _host-volumes/yii2
+          pushd _host-volumes/yii2 && git checkout ${TEST_YII_VERSION} && popd
+          cp .env-dist .env
+
+      - name: Before script
+        run: |
+          pwd
+          docker version
+          docker info
+          docker-compose version
+
+      - name: Run script
+        run: |
+          docker-compose build --build-arg X_LEGACY_GD_LIB=${{ matrix.vars }}
+          echo "travis_fold:end:BUILD folding ends"
+          docker-compose run --rm php php -v
+          docker-compose run --rm -e PHP_ENABLE_XDEBUG=1 php php -v
+          docker-compose run --rm php php /tests/requirements.php
+          docker-compose run --rm -w /yii2 php composer install --prefer-dist
+          docker-compose run --rm -w /yii2 php php -d error_reporting="E_ALL ^ E_DEPRECATED" vendor/bin/phpunit tests/framework/ --exclude db
