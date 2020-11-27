@@ -14,18 +14,18 @@ jobs:
       PHP_BASE_IMAGE_VERSION: 5.6-fpm
       DOCKERFILE_FLAVOUR: debian
       X_LEGACY_GD_LIB: 1
+      DOCKER_COMPOSE_VERSION: 1.25.4
+      TEST_YII_VERSION: a777c2e8f69dc753f8a945b1dd54bbaaa1e9e66c
+      PHP_IMAGE_NAME: yiisoftware/yii2-php
       key: cache-v1
 
     steps:
       - name: Before install
-        run: |
-          export TEST_YII_VERSION=a777c2e8f69dc753f8a945b1dd54bbaaa1e9e66c
-          export DOCKER_COMPOSE_VERSION=1.25.4
-          export PHP_IMAGE_NAME=yiisoftware/yii2-php      
+        run: |   
           sudo apt-get update
           sudo apt-get install docker-ce
           sudo rm /usr/local/bin/docker-compose
-          curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+          curl -L https://github.com/docker/compose/releases/download/${{ env.DOCKER_COMPOSE_VERSION }}/docker-compose-`uname -s`-`uname -m` > docker-compose
           chmod +x docker-compose
           sudo mv docker-compose /usr/local/bin
 
