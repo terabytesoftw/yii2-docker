@@ -23,16 +23,11 @@ jobs:
       - name: Before install
         run: |   
           sudo apt-get update
-          sudo apt-get install docker-ce
-          sudo rm /usr/local/bin/docker-compose
-          curl -L https://github.com/docker/compose/releases/download/${{ env.DOCKER_COMPOSE_VERSION }}/docker-compose-`uname -s`-`uname -m` > docker-compose
-          chmod +x docker-compose
-          sudo mv docker-compose /usr/local/bin
 
       - name: Install
         run: |
           git clone https://github.com/yiisoft/yii2 _host-volumes/yii2
-          pushd _host-volumes/yii2 && git checkout ${TEST_YII_VERSION} && popd
+          pushd _host-volumes/yii2 && git checkout ${{ env.TEST_YII_VERSION }} && popd
           cp .env-dist .env
 
       - name: Before script
