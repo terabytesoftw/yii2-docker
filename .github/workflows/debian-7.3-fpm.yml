@@ -28,7 +28,9 @@ jobs:
         run: |
           git clone https://github.com/yiisoft/yii2 _host-volumes/yii2
           pushd _host-volumes/yii2 && git checkout ${{ env.TEST_YII_VERSION }} && popd
+          cd yii2-docker
           cp .env-dist .env
+          cd ..
 
       - name: Before script
         run: |
