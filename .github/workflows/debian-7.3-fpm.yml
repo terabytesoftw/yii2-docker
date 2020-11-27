@@ -6,40 +6,14 @@ name: build
 
 jobs:
   tests:
-    name: doker-images-${{ matrix.images }}
+    name: debian-7.3-fpm
 
     env:
-
+      PHP_BASE_IMAGE_VERSION: 5.6-fpm
+      DOCKERFILE_FLAVOUR: debian
+      X_LEGACY_GD_LIB: 1
       key: cache-v1
 
-    runs-on: ${{ matrix.images }}
-
-    strategy:
-      matrix:
-        images:
-          - "5.6-fpm DOCKERFILE_FLAVOUR=debian"
-          - "7.0-fpm DOCKERFILE_FLAVOUR=debian"
-          - "7.1-fpm DOCKERFILE_FLAVOUR=debian"
-          - "7.2-fpm DOCKERFILE_FLAVOUR=debian"
-          - "5.6-apache DOCKERFILE_FLAVOUR=debian"
-          - "7.0-apache DOCKERFILE_FLAVOUR=debian"
-          - "7.1-apache DOCKERFILE_FLAVOUR=debian"
-          - "7.2-apache DOCKERFILE_FLAVOUR=debian"
-
-        vars:
-          - "1"
-          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
-          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
-          - "1"
-          - "1"
-          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.7.2"
-          - "1 PECL_XDEBUG_INSTALL_SUFFIX=-2.9.8"
-          - "1"
-
-    services:
-      mysql:
-        image: ${{ matrix.images }}
-        
     steps:
       - name: Before install
         run: |
@@ -68,10 +42,9 @@ jobs:
 
       - name: Run script
         run: |
-          docker-compose build --build-arg X_LEGACY_GD_LIB=${{ matrix.vars }}
-          echo "travis_fold:end:BUILD folding ends"
+          docker-compose build --build-arg X_LEGACY_GD_LIB=$X_LEGACY_GD_LIB
           docker-compose run --rm php php -v
           docker-compose run --rm -e PHP_ENABLE_XDEBUG=1 php php -v
           docker-compose run --rm php php /tests/requirements.php
           docker-compose run --rm -w /yii2 php composer install --prefer-dist
-          docker-compose run --rm -w /yii2 php php -d error_reporting="E_ALL ^ E_DEPRECATED" vendor/bin/phpunit tests/framework/ --exclude db
+          docker-compose run --rm -w /yii2 php php -d error_reporting="E_ALL ^ E_DEPRECATED" vendor/bin/phpunit tests/framework/ --exclude db          
